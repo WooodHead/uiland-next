@@ -79,7 +79,7 @@ const Header = () => {
 										<img
 											src={user?.user_metadata.avatar_url}
 											referrerPolicy='no-referrer'
-											alt={`Avavtar of ${user?.user_metadata.full_name}`}
+											alt={`Avatar of ${user?.user_metadata.full_name}`}
 										/>
 										{popup && (
 											<Popup>

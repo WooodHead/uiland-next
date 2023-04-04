@@ -118,6 +118,7 @@ const SinglePage = ({ screens }) => {
 	// 		query: query,
 	// 	  })
 	// },[])
+
 	// Triggers fetch for new page
 	const handlePagination = (page) => {
 		const path = router.pathname;
@@ -127,7 +128,7 @@ const SinglePage = ({ screens }) => {
 			pathname: path,
 			query: query,
 		});
-		userListRef.current.scrollIntoView({ behavior: 'smooth' });
+		userListRef.current.scrollIntoView({ behavior: 'instant' });
 	};
 
 	//This is used to track the number of times a user has visited the screen. The guide modal
@@ -148,7 +149,7 @@ const SinglePage = ({ screens }) => {
 		localStorage.setItem('numberOfVisits', String(addToNumber));
 	}, []);
 
-	//get actual cunt of screens
+	//get actual count of screens
 	useEffect(() => {
 		async function getCount() {
 			const count = await getScreensByIdCount(
@@ -236,11 +237,12 @@ const SinglePage = ({ screens }) => {
 	const scrollToTop = () => {
 		window.scrollTo({
 			top: 0,
-			behavior: 'smooth', // for smoothly scrolling
+			behavior: 'instant', // for smoothly scrolling
 		});
 	};
 	useEffect(() => {
 		window.addEventListener('scroll', () => {
+			//shows the scrollToTop button if page offset scrolled is greater than 800
 			if (window.pageYOffset > 800) {
 				setShowButton(true);
 			} else {
@@ -313,6 +315,8 @@ const SinglePage = ({ screens }) => {
 
 	// 		yes()
 	// 	},[router.query.id])
+
+	//assigns page sections 100 screens divided by 20 screens per page
 	const pageCount = Math.ceil(actualCount / perPage);
 
 	//add canonical tag
@@ -325,12 +329,18 @@ const SinglePage = ({ screens }) => {
 	}
 
 	//show tooltip when mouse is on the component
-	function showTooltip(id) {
+	function showTooltip(id,e) {
+		//prevents event bubbling 
+		e.stopPropagation()
+		//this targets only the hovered items by getting its unique id
 		setRevealTooltip(id);
 	}
 
 	//hide tooltip when mouse is removed from it
-	function hideTooltip() {
+	function hideTooltip(e) {
+			//prevents event bubbling 
+		e.stopPropagation()
+			//this targets only the hovered items by getting its unique id
 		setRevealTooltip(0);
 	}
 
@@ -601,8 +611,8 @@ const SinglePage = ({ screens }) => {
 				{filtered?.map((data) => (
 					<ScreenShotContent key={data.id}>
 						<ScreenshotContainer
-							onMouseEnter={() => showTooltip(data.id)}
-							onMouseLeave={hideTooltip}
+							onMouseEnter={(e) => showTooltip(data.id,e)}
+							onMouseLeave={(e)=>hideTooltip(e)}
 						>
 							<Image
 								src={data.url}
