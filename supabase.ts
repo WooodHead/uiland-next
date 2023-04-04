@@ -48,25 +48,23 @@ export async function getAllScreens() {
 
 //    get all screens total number
 export async function getAllScreensCount() {
-const { count, error } = await supabase
-.from('Screens')
-.select('*', { count: 'exact', head: true })
-return count;
+	const { count, error } = await supabase
+		.from('Screens')
+		.select('*', { count: 'exact', head: true });
+	return count;
 }
 
-   //get  limited screens for view more
+//get  limited screens for view more
 //    export async function getViewMoreScreens(id) {
- 
-  
+
 // 	const { data, error } = await supabase
 // 	.from('Screens')
 // 	.select()
 // 	.not('screenId', 'is', id)
 // 	console.log("dope",data)
-	
+
 // 	  return data;
 // 	}
-
 
 //    get all limited screens
 // export async function getLimitedScreens() {

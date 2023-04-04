@@ -19,7 +19,6 @@ const Screenshot = ({ imgLink, Name }: screenshotProps) => {
 					height={640}
 					src={imgLink}
 					alt={`${Name} App Screenshots`}
-				
 					placeholder='blur'
 					unoptimized
 					blurDataURL={BASE_IMAGE}

@@ -33,10 +33,10 @@ import {
 	getAllScreens,
 	getScreensById,
 	getScreensByIdCount,
-	getRange,getAllScreensCount
+	getRange,
+	getAllScreensCount,
 } from '../../../../supabase';
 import { GetStaticPaths, GetStaticProps, GetServerSideProps } from 'next';
-
 
 import NewsLetter from '../../../../components/NewsLetter';
 import withPopContext from '../../../../HOC/withPopContext';
@@ -98,7 +98,7 @@ const SinglePage = ({ screens }) => {
 
 	const [perPage, setPerPage] = useState<number>(20);
 
-	const[viewMoreData,setViewMoreData]=useState([])
+	const [viewMoreData, setViewMoreData] = useState([]);
 
 	const [actualCount, setActualCount] = useState<number>(0);
 	const [getPeriod, setGetPeriod] = useState([]);
@@ -284,31 +284,27 @@ const SinglePage = ({ screens }) => {
 		//adding this dependency works for now
 	}, [timeHost]);
 
+	//get view more screens
+	useEffect(() => {
+		async function viewMore() {
+			const data = await getAllScreens();
+			const count = await getAllScreensCount();
+			console.log('dope', data);
+			setViewMoreData(data);
+			const randomNumber = Math.floor(Math.random() * count);
+			const randomNumber2 = Math.floor(Math.random() * count);
 
-//get view more screens 
-useEffect(()=>{
+			// console.log("dopse",viewMoreData)
+			viewMoreData[0] = viewMoreData[randomNumber];
 
-	async function viewMore(){
-		const data =await getAllScreens()
-		const count= await getAllScreensCount()
-		console.log("dope",data)
-		setViewMoreData(data)
-		const randomNumber=Math.floor(Math.random()*count)
-		const randomNumber2=Math.floor(Math.random()*count)
-		
-		// console.log("dopse",viewMoreData)
-         viewMoreData[0]=viewMoreData[randomNumber]
-	
-         viewMoreData[1]=viewMoreData[randomNumber2]
-	
+			viewMoreData[1] = viewMoreData[randomNumber2];
 
-// [ viewMoreData[0], viewMoreData[Math.floor(Math.random()*count)]]=[ viewMoreData[Math.floor(Math.random()*count)], viewMoreData[0]]
-// [ viewMoreData[1], viewMoreData[Math.floor(Math.random()*count)]]=[ viewMoreData[Math.floor(Math.random()*count)], viewMoreData[1]]
-		//  console.log("yes",viewMoreData)
-	}
-  viewMore()
-},[])
-
+			// [ viewMoreData[0], viewMoreData[Math.floor(Math.random()*count)]]=[ viewMoreData[Math.floor(Math.random()*count)], viewMoreData[0]]
+			// [ viewMoreData[1], viewMoreData[Math.floor(Math.random()*count)]]=[ viewMoreData[Math.floor(Math.random()*count)], viewMoreData[1]]
+			//  console.log("yes",viewMoreData)
+		}
+		viewMore();
+	}, []);
 
 	// 	useEffect(()=>{
 	// 	async	function yes(){
@@ -337,8 +333,6 @@ useEffect(()=>{
 	function hideTooltip() {
 		setRevealTooltip(0);
 	}
-
-
 
 	return (
 		<>
