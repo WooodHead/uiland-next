@@ -237,7 +237,7 @@ const SinglePage = ({ screens }) => {
 	const scrollToTop = () => {
 		window.scrollTo({
 			top: 0,
-			behavior: 'instant', // for smoothly scrolling
+			behavior: 'smooth', // for smoothly scrolling
 		});
 	};
 	useEffect(() => {
