@@ -79,8 +79,11 @@ return count;
 
 export async function getCountry(brandName:string| string[]) {
 
+	//gets country i.e Nigeria | international of the different brands 
 
-	const brand = brandName[0].charAt(0).toUpperCase() + brandName.slice(1);
+	//brand name comes with the first letter not capitalized which differs from the way it is stored in supabase
+
+	const brand = brandName[0].charAt(0).toUpperCase() + brandName.slice(1); //capitalizes the brand name
 	const { data, error } = await supabase
 		.from('Screens')
 		.select('country')
@@ -263,6 +266,7 @@ export async function getProfileByEvent(user) {
 }
 
 export async function checkSubscribedUSer(user) {
+	//check if user is subscribed
 	if (!user) return;
 	const { data, error } = await supabase
 		.from('profile')

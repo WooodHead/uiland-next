@@ -70,8 +70,11 @@ export const UserContextProvider = ({ children }) => {
 	}, []);
 
 	return (
+
+		//different context providers for country and users instead of a single value object for performance reasons
+		// value={country,data} would create a new copy of the object on each mount causing rerenders even when values of country and data dont change
 		<UserCountryContext.Provider value={country}>
-			<UserContext.Provider value={ user }>{children}</UserContext.Provider>
+			<UserContext.Provider value={ user }>{children}</UserContext.Provider> 
 		</UserCountryContext.Provider>
 	);
 };
