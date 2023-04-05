@@ -21,7 +21,7 @@ function Hero() {
 					<div className='landingpage__row'>
 						<div className='landingpage__col landingpage__col-50'>
 							<div className='landingpage__text'>
-								<div className='landingpage__text-h1'>
+								<h1 className='landingpage__text-h1'>
 									Discover mobile UI used by{' '}
 									<span className='ring-wrapper'>
 										<span className='ring-wrapper-svg'>
@@ -45,7 +45,7 @@ function Hero() {
 										Africa's
 									</span>{' '}
 									top companies
-								</div>
+								</h1>
 
 								<div className='landingpage__text-h2 marg-tb-xs'>
 									Save hours of research time with UiLand's curated collection
