@@ -1,9 +1,8 @@
-import { useContext, useEffect } from 'react';
-import styled from 'styled-components';
 import Link from 'next/link';
+import styled from 'styled-components';
+import EmptyState from '../EmptyState';
 import { BrandDescription, BrandLogo, Pill, Screenshot } from '../uiElements';
 import { pillsTypes } from '../uiElements/pills';
-import EmptyState from '../EmptyState';
 
 const ScreensInCategory = ({ screens }) => {
 	return (
@@ -12,7 +11,7 @@ const ScreensInCategory = ({ screens }) => {
 				<CategorySectionWrapper>
 					{/* checks for empty array */}
 					{JSON.stringify(screens) !== JSON.stringify([]) ? (
-						screens?.map(({ startScreens, name, category, logo, id }) => (
+						screens?.map(({ startScreens, name, category,country, logo, id }) => (
 							<ScreenShotContainer key={id}>
 								<Link
 									href={`/screens/${name.toLowerCase()}/screens/${id}`}
@@ -22,7 +21,7 @@ const ScreensInCategory = ({ screens }) => {
 									<div>
 										<ScreenshotContainerTop>
 											<BrandLogo imageUrl={logo} />
-											<BrandDescription name={name} category={category} />
+											<BrandDescription name={name} 	brandcountry={country} category={category} />
 											<Pill type={pillsTypes.screenshot}>view</Pill>
 										</ScreenshotContainerTop>
 										<ScreenshotContainerBottom>
