@@ -291,7 +291,7 @@ const SinglePage = ({ screens }) => {
 		async function viewMore() {
 			const data = await getAllScreens();
 			const count = await getAllScreensCount();
-			console.log('dope', data);
+
 			setViewMoreData(data);
 			const randomNumber = Math.floor(Math.random() * count);
 			const randomNumber2 = Math.floor(Math.random() * count);
@@ -329,18 +329,18 @@ const SinglePage = ({ screens }) => {
 	}
 
 	//show tooltip when mouse is on the component
-	function showTooltip(id,e) {
-		//prevents event bubbling 
-		e.stopPropagation()
+	function showTooltip(id, e) {
+		//prevents event bubbling
+		e.stopPropagation();
 		//this targets only the hovered items by getting its unique id
 		setRevealTooltip(id);
 	}
 
 	//hide tooltip when mouse is removed from it
 	function hideTooltip(e) {
-			//prevents event bubbling 
-		e.stopPropagation()
-			//this targets only the hovered items by getting its unique id
+		//prevents event bubbling
+		e.stopPropagation();
+		//this targets only the hovered items by getting its unique id
 		setRevealTooltip(0);
 	}
 
@@ -611,8 +611,8 @@ const SinglePage = ({ screens }) => {
 				{filtered?.map((data) => (
 					<ScreenShotContent key={data.id}>
 						<ScreenshotContainer
-							onMouseEnter={(e) => showTooltip(data.id,e)}
-							onMouseLeave={(e)=>hideTooltip(e)}
+							onMouseEnter={(e) => showTooltip(data.id, e)}
+							onMouseLeave={(e) => hideTooltip(e)}
 						>
 							<Image
 								src={data.url}
