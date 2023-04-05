@@ -13,6 +13,7 @@ type indexProps = {
 			name: string;
 			logo: string;
 			category: string;
+			country: string;
 			startScreens: string[];
 		};
 	}[];
@@ -31,6 +32,7 @@ const BookmarkScreensInCategory: React.FC<indexProps> = ({ screens }) => {
 									name: string;
 									logo: string;
 									category: string;
+									country: string;
 									startScreens: string[];
 								};
 							}) => (
@@ -44,6 +46,7 @@ const BookmarkScreensInCategory: React.FC<indexProps> = ({ screens }) => {
 											<ScreenshotContainerTop>
 												<BrandLogo imageUrl={result.album_id.logo} />
 												<BrandDescription
+													brandcountry={result.album_id.country}
 													name={result.album_id.name}
 													category={result.album_id.category}
 												/>
