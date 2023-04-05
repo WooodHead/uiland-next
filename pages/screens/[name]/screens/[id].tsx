@@ -1,51 +1,78 @@
 import Head from 'next/head';
-import { useEffect, useState, useContext, useRef } from 'react';
 import Image from 'next/image';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { BASE_IMAGE } from '../../../../utils/base64Image';
 //Third party libraries
-import styled from 'styled-components';
 import ReactPaginate from 'react-paginate';
+import styled from 'styled-components';
 // Components
 import {
 	BottomSheet,
-	Button,
-	Toast,
 	Pill,
+	Toast
 } from '../../../../components/uiElements';
 
-import { PopContext } from '../../../../context/PopContext';
-import { pillsTypes } from '../../../../components/uiElements/pills';
-import ImageCardInfo from '../../../../components/ImageCardInfo';
-import Modal from '../../../../components/modal';
-import SocialsCard from '../../../../components/SocialsCard';
-import Select from '../../../../components/uiElements/select';
-import Login from '../../../../components/Login/login';
-import ThreeDots from '../../../../components/ThreeDots';
-import DeleteIcon from '../../../../components/DeleteIcon';
-import SaveIcon from '../../../../components/SaveIcon';
-import CloseIcon from '../../../../components/CloseModalIcon';
 import AddToBookmark from '../../../../components/AddToBookmark';
+import CloseIcon from '../../../../components/CloseModalIcon';
+import DeleteIcon from '../../../../components/DeleteIcon';
+import ImageCardInfo from '../../../../components/ImageCardInfo';
+import Login from '../../../../components/Login/login';
+import SaveIcon from '../../../../components/SaveIcon';
+import SocialsCard from '../../../../components/SocialsCard';
+import Modal from '../../../../components/modal';
+import { pillsTypes } from '../../../../components/uiElements/pills';
+import Select from '../../../../components/uiElements/select';
+import { PopContext } from '../../../../context/PopContext';
 
 //hooks
 
+import { GetServerSideProps } from 'next';
 import useScreenshot from '../../../../hooks/useScreenshot';
 import {
+	checkSubscribedUSer,
 	getAllScreens,
-	getScreensById,
-	getScreensByIdCount,
-	getRange,
 	getAllScreensCount,
+	getCountry,
+	getScreensById,
+	getScreensByIdCount
 } from '../../../../supabase';
-import { GetStaticPaths, GetStaticProps, GetServerSideProps } from 'next';
 
-import NewsLetter from '../../../../components/NewsLetter';
-import withPopContext from '../../../../HOC/withPopContext';
 import Redis from 'ioredis';
-import DownloadIcon from '../../../../components/DownloadIcon';
+import withPopContext from '../../../../HOC/withPopContext';
 import CopyIcon from '../../../../components/CopyIcon';
+import DownloadIcon from '../../../../components/DownloadIcon';
+import NewsLetter from '../../../../components/NewsLetter';
+import PaymentBanner from '../../../../components/PaymentBanner';
 import Tooltip from '../../../../components/Tooltip';
+import {
+	UserContext,
+	UserCountryContext,
+} from '../../../../context/authContext';
 
-const SinglePage = ({ screens }) => {
+const SinglePage = ({ screens,brandcountry }) => {
+	const [showPaymentBanner, setShowPaymentBanner] = useState(false);
+	const user = useContext(UserContext);
+	const country = useContext(UserCountryContext);
+
+
+	
+	useEffect(() => {
+
+		//logic for showing payment banner 
+
+		checkSubscribedUSer(user).then((data) => {
+	
+			
+			if (!data) setShowPaymentBanner(true);// this means if no data is returned show the payment banner... this means that the user is not logged in. The Payment banner would prompt the user to login in this case
+				
+			else if (
+				data.event !== 'subscription.create' &&
+				brandcountry === 'Nigeria'
+			)
+				setShowPaymentBanner(true); // this means if the authenticated user has no active subscription and is viewing a nigerian app show banner
+		});
+	}, [user, country]);
+
 	const {
 		headerInfo,
 		toggleBottomSheet,
@@ -118,7 +145,6 @@ const SinglePage = ({ screens }) => {
 	// 		query: query,
 	// 	  })
 	// },[])
-
 	// Triggers fetch for new page
 	const handlePagination = (page) => {
 		const path = router.pathname;
@@ -128,7 +154,7 @@ const SinglePage = ({ screens }) => {
 			pathname: path,
 			query: query,
 		});
-		userListRef.current.scrollIntoView({ behavior: 'instant' });
+		userListRef.current.scrollIntoView({ behavior: 'smooth' });
 	};
 
 	//This is used to track the number of times a user has visited the screen. The guide modal
@@ -149,7 +175,7 @@ const SinglePage = ({ screens }) => {
 		localStorage.setItem('numberOfVisits', String(addToNumber));
 	}, []);
 
-	//get actual count of screens
+	//get actual cunt of screens
 	useEffect(() => {
 		async function getCount() {
 			const count = await getScreensByIdCount(
@@ -242,7 +268,6 @@ const SinglePage = ({ screens }) => {
 	};
 	useEffect(() => {
 		window.addEventListener('scroll', () => {
-			//shows the scrollToTop button if page offset scrolled is greater than 800
 			if (window.pageYOffset > 800) {
 				setShowButton(true);
 			} else {
@@ -291,7 +316,7 @@ const SinglePage = ({ screens }) => {
 		async function viewMore() {
 			const data = await getAllScreens();
 			const count = await getAllScreensCount();
-
+	
 			setViewMoreData(data);
 			const randomNumber = Math.floor(Math.random() * count);
 			const randomNumber2 = Math.floor(Math.random() * count);
@@ -315,8 +340,6 @@ const SinglePage = ({ screens }) => {
 
 	// 		yes()
 	// 	},[router.query.id])
-
-	//assigns page sections 100 screens divided by 20 screens per page
 	const pageCount = Math.ceil(actualCount / perPage);
 
 	//add canonical tag
@@ -329,18 +352,12 @@ const SinglePage = ({ screens }) => {
 	}
 
 	//show tooltip when mouse is on the component
-	function showTooltip(id, e) {
-		//prevents event bubbling
-		e.stopPropagation();
-		//this targets only the hovered items by getting its unique id
+	function showTooltip(id) {
 		setRevealTooltip(id);
 	}
 
 	//hide tooltip when mouse is removed from it
-	function hideTooltip(e) {
-		//prevents event bubbling
-		e.stopPropagation();
-		//this targets only the hovered items by getting its unique id
+	function hideTooltip() {
 		setRevealTooltip(0);
 	}
 
@@ -576,7 +593,6 @@ const SinglePage = ({ screens }) => {
 					handleInputFilter={handleInputFilter}
 				/>{' '}
 			</SecondHeader>
-
 			<CategoryTabContainer>
 				<CategoryTabWrapper>
 					{
@@ -599,7 +615,6 @@ const SinglePage = ({ screens }) => {
 					}
 				</CategoryTabWrapper>
 			</CategoryTabContainer>
-
 			<ElementsInCategoryContainer>
 				{showButton && (
 					<ScrollTop onClick={scrollToTop} title='scroll to top'>
@@ -607,12 +622,11 @@ const SinglePage = ({ screens }) => {
 					</ScrollTop>
 				)}
 				{/* todo:populate with filtered data */}
-
 				{filtered?.map((data) => (
 					<ScreenShotContent key={data.id}>
 						<ScreenshotContainer
-							onMouseEnter={(e) => showTooltip(data.id, e)}
-							onMouseLeave={(e) => hideTooltip(e)}
+							onMouseEnter={() => showTooltip(data.id)}
+							onMouseLeave={hideTooltip}
 						>
 							<Image
 								src={data.url}
@@ -642,47 +656,39 @@ const SinglePage = ({ screens }) => {
 					</ScreenShotContent>
 				))}
 			</ElementsInCategoryContainer>
-			{!payingbanner && (
-				<SubscribeBanner>
-					<ButtonWrapper onClick={handleClickSubscribeButton}>
-						<Button type={buttonTypes.modal}>
-							Subscribe to View All Screens
-						</Button>
-					</ButtonWrapper>
-					<GridBackground>
-						<img src='/assets/img/grid.svg' alt='grid' />
-					</GridBackground>
-					<Cloud></Cloud>
-				</SubscribeBanner>
-			)}
 			<Toast
 				Progress={Progress}
 				pendingText={toastPendingText}
 				successText={toastSuccessText}
 			/>
-
-			<ReactPaginate
-				marginPagesDisplayed={5}
-				pageRangeDisplayed={5}
-				previousLabel={'< Previous'}
-				nextLabel={'Next >'}
-				breakLabel={'...'}
-				forcePage={(Number(router.query.page) || 1) - 1}
-				pageCount={pageCount}
-				onPageChange={handlePagination}
-				disableInitialCallback={true}
-				containerClassName={'paginate-wrap'}
-				pageClassName={'paginate-li'}
-				pageLinkClassName={'paginate-a'}
-				activeClassName={'paginate-active'}
-				nextLinkClassName={'paginate-next-a'}
-				previousLinkClassName={'paginate-prev-a'}
-				breakLinkClassName={'paginate-break-a'}
-				disabledClassName={'paginate-disabled'}
-			/>
+			{/* remove pagination if user is an unsuscribed  international user on a paid app */}
+			{!showPaymentBanner && (
+				<ReactPaginate
+					marginPagesDisplayed={5}
+					pageRangeDisplayed={5}
+					previousLabel={'< Previous'}
+					nextLabel={'Next >'}
+					breakLabel={'...'}
+					forcePage={(Number(router.query.page) || 1) - 1}
+					pageCount={pageCount}
+					onPageChange={handlePagination}
+					disableInitialCallback={true}
+					containerClassName={'paginate-wrap'}
+					pageClassName={'paginate-li'}
+					pageLinkClassName={'paginate-a'}
+					activeClassName={'paginate-active'}
+					nextLinkClassName={'paginate-next-a'}
+					previousLinkClassName={'paginate-prev-a'}
+					breakLinkClassName={'paginate-break-a'}
+					disabledClassName={'paginate-disabled'}
+				/>
+			)}
+	{/* add payment banner  if user is an unsuscribed  international user on a paid app */}
+			{showPaymentBanner && <PaymentBanner country={country} />}
 		</>
 	);
 };
+
 const CategoryTabContainer = styled.section`
 	margin: 1.5em 0;
 	padding: 1em 0;
@@ -1057,10 +1063,12 @@ export const getServerSideProps: GetServerSideProps = async ({
 	query,
 	params,
 }) => {
+	const { name } = query;
 	let screens;
 	const page = query.page || 1;
-
 	const completeID = params.id + page.toString() + query.version;
+	const { country: brandcountry } = await getCountry(name); //get the country associated with a brand using the superbase function getCountry
+
 
 	const screensCacheObject = {};
 
@@ -1098,6 +1106,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 	return {
 		props: {
 			screens,
+			brandcountry,
 		},
 	};
 };
