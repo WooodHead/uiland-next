@@ -6,10 +6,10 @@ import Modal from '../modal';
 import { useContext } from 'react';
 import { UserContext } from '../../context/authContext';
 
-const PaymentBanner = ({ country}) => {
-    const { loginToggleModal, isModalLogin } = useModal();
-    const user = useContext(UserContext)
- 
+const PaymentBanner = ({ country }) => {
+	const { loginToggleModal, isModalLogin } = useModal();
+	const user = useContext(UserContext);
+
 	return (
 		<>
 			{isModalLogin && (
@@ -17,19 +17,20 @@ const PaymentBanner = ({ country}) => {
 					<Login toggleModal={loginToggleModal} />
 				</Modal>
 			)}
-		     <Overlay />
-            <MainWrapper>
-       
+			<Overlay />
+			<MainWrapper>
+				{/* //payment banner shows login button for all unauthenticated users and subscribe now for international users in paid brands */}
 				{(country !== 'Nigeria' || country !== 'NG') && user ? (
-				
-                        <PaymentButton>Subscribe to View More Screens
-                        	<Link href={'/pricing'}><span>Subscribe Now</span></Link>
-                        </PaymentButton>
-					
+					<PaymentButton>
+						Subscribe to View More Screens
+						<Link href={'/pricing'}>
+							<span>Subscribe Now</span>
+						</Link>
+					</PaymentButton>
 				) : (
 					<PaymentButton>
 						Sign In to View More Screens
-						<span  onClick={loginToggleModal}>Log In </span>
+						<span onClick={loginToggleModal}>Log In </span>
 					</PaymentButton>
 				)}
 			</MainWrapper>
@@ -40,7 +41,7 @@ const PaymentBanner = ({ country}) => {
 const Overlay = styled.div`
 	height: 200px;
 	width: 100%;
-    margin-top:-250px;
+	margin-top: -250px;
 	background-image: linear-gradient(
 		to bottom,
 		#ffffff,
@@ -60,32 +61,32 @@ const PaymentButton = styled.div`
 	font-size: 20px;
 	font-weight: 800;
 	color: #272d4b;
-    text-align:center;
+	text-align: center;
 
-    @media (min-width: 768px) {
-        font-size: 36px;
-        :span{
-            font-size: 18px;
-        }
-    }
-    span{
-        margin-top:.5em;
-        font-weight:500;
-        cursor: pointer;
-        font-size: 14px;
-        display:block;
-        width: 200px;
-        color: #fff;
-        padding:1em;
-        margin:1em auto;
-        border-radius:.5em;
-        background-color: var(--primary-color);
-    }
+	@media (min-width: 768px) {
+		font-size: 36px;
+		:span {
+			font-size: 18px;
+		}
+	}
+	span {
+		margin-top: 0.5em;
+		font-weight: 500;
+		cursor: pointer;
+		font-size: 14px;
+		display: block;
+		width: 200px;
+		color: #fff;
+		padding: 1em;
+		margin: 1em auto;
+		border-radius: 0.5em;
+		background-color: var(--primary-color);
+	}
 `;
 
 const MainWrapper = styled.div`
 	height: 300px;
-    margin-top:-100px;
+	margin-top: -100px;
 	width: 100%;
 	background-image: linear-gradient(
 		to bottom,
@@ -100,8 +101,7 @@ const MainWrapper = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-    position: relative;
-
+	position: relative;
 `;
 
 export default PaymentBanner;
