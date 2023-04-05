@@ -21,7 +21,7 @@ const ScreensInCategory = ({ screens }) => {
 									<div>
 										<ScreenshotContainerTop>
 											<BrandLogo imageUrl={logo} />
-											<BrandDescription name={name} 	brandcountry={country} category={category} />
+											<BrandDescription name={name} brandcountry={country} category={category} />
 											<Pill type={pillsTypes.screenshot}>view</Pill>
 										</ScreenshotContainerTop>
 										<ScreenshotContainerBottom>

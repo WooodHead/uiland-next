@@ -302,7 +302,8 @@ export async function getBookmarks(user) {
            logo,
            name,
            url,
-           category
+           category,
+		   country
        )
      `
 		)
