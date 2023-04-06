@@ -48,23 +48,25 @@ export async function getAllScreens() {
 
 //    get all screens total number
 export async function getAllScreensCount() {
-	const { count, error } = await supabase
-		.from('Screens')
-		.select('*', { count: 'exact', head: true });
-	return count;
+const { count, error } = await supabase
+.from('Screens')
+.select('*', { count: 'exact', head: true })
+return count;
 }
 
-//get  limited screens for view more
+   //get  limited screens for view more
 //    export async function getViewMoreScreens(id) {
-
+ 
+  
 // 	const { data, error } = await supabase
 // 	.from('Screens')
 // 	.select()
 // 	.not('screenId', 'is', id)
-// 	console.log("dope",data)
 
+	
 // 	  return data;
 // 	}
+
 
 //    get all limited screens
 // export async function getLimitedScreens() {
@@ -75,8 +77,24 @@ export async function getAllScreensCount() {
 
 //get individual screens of the newest version content
 
+export async function getCountry(brandName:string| string[]) {
+
+	//gets country i.e Nigeria | international of the different brands 
+
+	//brand name comes with the first letter not capitalized which differs from the way it is stored in supabase
+
+	const brand = brandName[0].charAt(0).toUpperCase() + brandName.slice(1); //capitalizes the brand name
+	const { data, error } = await supabase
+		.from('Screens')
+		.select('country')
+		.eq('name', brand)
+		.limit(1);
+
+	return data[0]
+}
+
 export async function getScreensById(id, page, query) {
-	let limit = 19;
+	let limit =  27;
 	let limitMaxRange = page * limit;
 	let limitMinRange = page * limit - limit;
 
@@ -247,6 +265,19 @@ export async function getProfileByEvent(user) {
 	return data;
 }
 
+export async function checkSubscribedUSer(user) {
+	//check if user is subscribed
+	if (!user) return;
+	const { data, error } = await supabase
+		.from('profile')
+		.select('event')
+		//   i will use this to limit the result later
+		//   .limit(1)
+		.eq('email', user.email);
+	return data[0];
+ 
+}
+
 export async function getScreensProperties(id) {
 	const { data, error } = await supabase
 		.from('Screens')
@@ -271,7 +302,8 @@ export async function getBookmarks(user) {
            logo,
            name,
            url,
-           category
+           category,
+		   country
        )
      `
 		)
