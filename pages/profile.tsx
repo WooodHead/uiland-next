@@ -185,11 +185,11 @@ export default function Profile({ user }) {
 						</div>
 					</div>
 
-					<div className='profile-delete'>
+					{/* <div className='profile-delete'>
 						<button className='btn btn-delete' onClick={handleDelete}>
 							Delete Account
 						</button>
-					</div>
+					</div> */}
 				</div>
 			</Main>
 		</>
