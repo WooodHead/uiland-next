@@ -17,15 +17,13 @@ const BrandDescription: React.FC<brandDescriptionProps> = ({
 }) => {
 	const country = useContext(UserCountryContext);
 
-	
 	return (
 		<BrandDescriptionContainer>
 			<h3 className='brand-name'>
 				{name}
 				<span>
 					{/* shows PRO Crown image if user is international and the brand is a Nigerian brand */}
-					{brandcountry === 'Nigeria' &&
-					country !== 'Nigeria' ? (
+					{brandcountry === 'Nigeria' && country !== 'Nigeria' ? (
 						<img
 							src='/assets/img/crown.png'
 							alt='my next image'
