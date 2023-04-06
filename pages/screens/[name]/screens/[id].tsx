@@ -6,11 +6,7 @@ import { BASE_IMAGE } from '../../../../utils/base64Image';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
 // Components
-import {
-	BottomSheet,
-	Pill,
-	Toast
-} from '../../../../components/uiElements';
+import { BottomSheet, Pill, Toast } from '../../../../components/uiElements';
 
 import AddToBookmark from '../../../../components/AddToBookmark';
 import CloseIcon from '../../../../components/CloseModalIcon';
@@ -34,7 +30,7 @@ import {
 	getAllScreensCount,
 	getCountry,
 	getScreensById,
-	getScreensByIdCount
+	getScreensByIdCount,
 } from '../../../../supabase';
 
 import Redis from 'ioredis';
@@ -49,22 +45,19 @@ import {
 	UserCountryContext,
 } from '../../../../context/authContext';
 
-const SinglePage = ({ screens,brandcountry }) => {
+const SinglePage = ({ screens, brandcountry }) => {
 	const [showPaymentBanner, setShowPaymentBanner] = useState(false);
 	const user = useContext(UserContext);
 	const country = useContext(UserCountryContext);
 
-
-	
 	useEffect(() => {
-
-		//logic for showing payment banner 
+		//logic for showing payment banner
 
 		checkSubscribedUSer(user).then((data) => {
-	
-			
-			if (!data) setShowPaymentBanner(true);// this means if no data is returned show the payment banner... this means that the user is not logged in. The Payment banner would prompt the user to login in this case
-				
+			if (!data)
+				setShowPaymentBanner(
+					true
+				); // this means if no data is returned show the payment banner... this means that the user is not logged in. The Payment banner would prompt the user to login in this case
 			else if (
 				data.event !== 'subscription.create' &&
 				brandcountry === 'Nigeria'
@@ -123,7 +116,7 @@ const SinglePage = ({ screens,brandcountry }) => {
 	const [visits, setVisits] = useState<number>();
 	const [active, setActive] = useState<number>(1);
 
-	const [perPage, setPerPage] = useState<number>(20);
+	const [perPage, setPerPage] = useState<number>(27);
 
 	const [viewMoreData, setViewMoreData] = useState([]);
 
@@ -154,7 +147,7 @@ const SinglePage = ({ screens,brandcountry }) => {
 			pathname: path,
 			query: query,
 		});
-		userListRef.current.scrollIntoView({ behavior: 'smooth' });
+		userListRef.current.scrollIntoView({ behavior: 'instant' });
 	};
 
 	//This is used to track the number of times a user has visited the screen. The guide modal
@@ -175,7 +168,7 @@ const SinglePage = ({ screens,brandcountry }) => {
 		localStorage.setItem('numberOfVisits', String(addToNumber));
 	}, []);
 
-	//get actual cunt of screens
+	//get actual count of screens
 	useEffect(() => {
 		async function getCount() {
 			const count = await getScreensByIdCount(
@@ -316,7 +309,7 @@ const SinglePage = ({ screens,brandcountry }) => {
 		async function viewMore() {
 			const data = await getAllScreens();
 			const count = await getAllScreensCount();
-	
+
 			setViewMoreData(data);
 			const randomNumber = Math.floor(Math.random() * count);
 			const randomNumber2 = Math.floor(Math.random() * count);
@@ -683,7 +676,7 @@ const SinglePage = ({ screens,brandcountry }) => {
 					disabledClassName={'paginate-disabled'}
 				/>
 			)}
-	{/* add payment banner  if user is an unsuscribed  international user on a paid app */}
+			{/* add payment banner  if user is an unsuscribed  international user on a paid app */}
 			{showPaymentBanner && <PaymentBanner country={country} />}
 		</>
 	);
@@ -1068,7 +1061,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 	const page = query.page || 1;
 	const completeID = params.id + page.toString() + query.version;
 	const { country: brandcountry } = await getCountry(name); //get the country associated with a brand using the superbase function getCountry
-
 
 	const screensCacheObject = {};
 
