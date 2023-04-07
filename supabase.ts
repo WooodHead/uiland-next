@@ -48,25 +48,22 @@ export async function getAllScreens() {
 
 //    get all screens total number
 export async function getAllScreensCount() {
-const { count, error } = await supabase
-.from('Screens')
-.select('*', { count: 'exact', head: true })
-return count;
+	const { count, error } = await supabase
+		.from('Screens')
+		.select('*', { count: 'exact', head: true });
+	return count;
 }
 
-   //get  limited screens for view more
+//get  limited screens for view more
 //    export async function getViewMoreScreens(id) {
- 
-  
+
 // 	const { data, error } = await supabase
 // 	.from('Screens')
 // 	.select()
 // 	.not('screenId', 'is', id)
 
-	
 // 	  return data;
 // 	}
-
 
 //    get all limited screens
 // export async function getLimitedScreens() {
@@ -77,9 +74,8 @@ return count;
 
 //get individual screens of the newest version content
 
-export async function getCountry(brandName:string| string[]) {
-
-	//gets country i.e Nigeria | international of the different brands 
+export async function getCountry(brandName: string | string[]) {
+	//gets country i.e Nigeria | international of the different brands
 
 	//brand name comes with the first letter not capitalized which differs from the way it is stored in supabase
 
@@ -90,11 +86,11 @@ export async function getCountry(brandName:string| string[]) {
 		.eq('name', brand)
 		.limit(1);
 
-	return data[0]
+	return data[0];
 }
 
 export async function getScreensById(id, page, query) {
-	let limit =  27;
+	let limit = 27;
 	let limitMaxRange = page * limit;
 	let limitMinRange = page * limit - limit;
 
@@ -275,7 +271,6 @@ export async function checkSubscribedUSer(user) {
 		//   .limit(1)
 		.eq('email', user.email);
 	return data[0];
- 
 }
 
 export async function getScreensProperties(id) {

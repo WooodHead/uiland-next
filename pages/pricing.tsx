@@ -175,7 +175,6 @@ export default function Pricing() {
 
 	//track users' location information
 
-
 	const buttonDetails = [
 		{ id: 1, text: 'Annual' },
 		{ id: 2, text: 'Bi-Annual' },
