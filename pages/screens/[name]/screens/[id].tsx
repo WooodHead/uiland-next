@@ -62,7 +62,7 @@ const SinglePage = ({ screens, brandcountry }) => {
 			else if (!data.event && (country === 'NG' || country === 'Nigeria')) {
 				return setShowPaymentBanner(false);
 			} else if (
-			// if there is a user but the user is not a paid user and user is an international user trying to visit a nigerian app
+			// if there is a user but the user is not a paid user and user is an international user trying to visit a nigerian
 				!data.event &&
 				brandcountry === 'Nigeria' &&
 				(country !== 'NG' || country !== 'Nigeria')

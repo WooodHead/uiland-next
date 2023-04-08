@@ -101,7 +101,7 @@ export async function getCountry(brandName: string | string[]) {
 	return data[0];
 }
 
-export async function getScreensById(id, page, query, user, brandCountry) {
+export async function getScreensById(id, page, query, user, brandCountry='Nigeria') {
 	let country;
 	const userdata = await checkSubscribedUSer(user);
 
