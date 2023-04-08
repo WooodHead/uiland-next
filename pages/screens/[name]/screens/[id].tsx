@@ -51,23 +51,25 @@ const SinglePage = ({ screens, brandcountry }) => {
 	const user = useContext(UserContext);
 	const country = useContext(UserCountryContext);
 
-
-
 	useEffect(() => {
 		//logic for showing payment banner
+
 		checkSubscribedUSer(user).then((data) => {
-			if (!data) return setShowPaymentBanner(true);
 			// this means if no data is returned show the payment banner... this means that the user is not logged in. The Payment banner would prompt the user to login in this case
+
+			if (!data) return setShowPaymentBanner(true);
+			// if there is a user but the user is not a paid user and user is  from nigeria
 			else if (!data.event && (country === 'NG' || country === 'Nigeria')) {
 				return setShowPaymentBanner(false);
-			}
-			else if (
-				!data.event && brandcountry === 'Nigeria' &&
+			} else if (
+			// if there is a user but the user is not a paid user and user is an international user trying to visit a nigerian app
+				!data.event &&
+				brandcountry === 'Nigeria' &&
 				(country !== 'NG' || country !== 'Nigeria')
 			) {
 				return setShowPaymentBanner(true);
 			}
-		return setShowPaymentBanner(false);
+			return setShowPaymentBanner(false);
 		});
 	}, [user, country]);
 
@@ -117,7 +119,6 @@ const SinglePage = ({ screens, brandcountry }) => {
 		pillStatus,
 		timeHost,
 	} = useScreenshot(screens);
-
 
 	const [visits, setVisits] = useState<number>();
 	const [active, setActive] = useState<number>(1);
@@ -1076,45 +1077,42 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 		data: { session },
 	} = await supabase.auth.getSession();
 
+	//get user belonging to that session
 	const user = session ? session.user : null;
 
-	screens = await getScreensById(params.id, page, query, user,brandcountry);
-
-	console.log(screens.length);
-
 	// CACHING LOGIC
-	// const screensCacheObject = {};
+	const screensCacheObject = {};
 
-	// const client = new Redis(process.env.REDIS_URL); //get redis instance
+	const client = new Redis(process.env.REDIS_URL); //get redis instance
 
-	// const CachedResults = JSON.parse(await client.get('screensCachedByID')); //get  screens data
+	const CachedResults = JSON.parse(await client.get('screensCachedByID')); //get  screens data
 
-	// if (!CachedResults) {
-	// 	screens = await getScreensById(params.id, page, query,user); // if there are no cached results retrieve from supabase
-	// 	screensCacheObject[completeID] = screens; //store cached results to instance... the to differentiate different screens for the different pages a unique identifier using the
-	// 	// screensid, page number and screens version is used. the structure of the data in upstach would be as follows
+	if (!CachedResults) {
+		screens = await getScreensById(params.id, page, query, user, brandcountry); // if there are no cached results retrieve from supabase
+		screensCacheObject[completeID] = screens; //store cached results to instance... the to differentiate different screens for the different pages a unique identifier using the
+		// screensid, page number and screens version is used. the structure of the data in upstach would be as follows
 
-	// 	// {
-	// 	// 	screensCachedByID : screens[]
-	// 	// }
+		// {
+		// 	screensCachedByID : screens[]
+		// }
 
-	// 	client.set(
-	// 		'screensCachedByID',
-	// 		JSON.stringify(screensCacheObject),
-	// 		'EX',
-	// 		3600
-	// 	);
-	// 	console.log('read from supabase');
-	// } else if (completeID in CachedResults) {
-	// 	// if cache already exists fetch the screens for that unique identifier built from the screen identity, page number and screen version
-	// 	screens = CachedResults[completeID];
-	// 	console.log('read from Redis cache');
-	// } else if (CachedResults && !(completeID in CachedResults)) {
-	// 	screens = await getScreensById(params.id, page, query,user);
-	// 	CachedResults[completeID] = screens;
-	// 	client.set('screensCachedByID', JSON.stringify(CachedResults), 'EX', 3600);
-	// 	console.log('read from supabase');
-	// }
+		client.set(
+			'screensCachedByID',
+			JSON.stringify(screensCacheObject),
+			'EX',
+			3600
+		);
+		console.log('read from supabase');
+	} else if (completeID in CachedResults) {
+		// if cache already exists fetch the screens for that unique identifier built from the screen identity, page number and screen version
+		screens = CachedResults[completeID];
+		console.log('read from Redis cache');
+	} else if (CachedResults && !(completeID in CachedResults)) {
+		screens = await getScreensById(params.id, page, query, user, brandcountry);
+		CachedResults[completeID] = screens;
+		client.set('screensCachedByID', JSON.stringify(CachedResults), 'EX', 3600);
+		console.log('read from supabase');
+	}
 
 	return {
 		props: {

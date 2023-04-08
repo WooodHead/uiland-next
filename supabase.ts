@@ -75,11 +75,15 @@ export async function getAllScreensCount() {
 //get individual screens of the newest version content
 
 export async function updateUserProfileInfo(user, country) {
-	console.log(country);
+	
 	const { error } = await supabase
 		.from('profile')
 		.update({ country: country })
 		.eq('id', user.id);
+		if (error) {
+			console.log(error);
+		}
+	
 }
 
 export async function getCountry(brandName: string | string[]) {
@@ -108,6 +112,10 @@ export async function getScreensById(id, page, query, user, brandCountry) {
 			.select('country')
 			.eq('id', user.id);
 		country = data[0]['country'];
+		if (error) {
+			console.log(error);
+		}
+	
 	}
 
 	//limit screens for unauthenticated users or international unpaid users
@@ -124,6 +132,10 @@ export async function getScreensById(id, page, query, user, brandCountry) {
 			.limit(28)
 			.eq('screenId', id)
 			.eq('version', 1);
+			if (error) {
+				console.log(error);
+			}
+		
 		return data;
 	}
 

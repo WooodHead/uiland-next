@@ -63,13 +63,13 @@ export const UserContextProvider = ({ children }) => {
 		const supabaseAuth = async () => {
 			const session = await getSession();
 			if (session) {
-				await updateUserProfileInfo(session.user,country)
+				await updateUserProfileInfo(session.user,country) //update the user profile document with the user's visiting country
 				return setUser(session.user);
 			}
 			return setUser(null);
 		};
 		supabaseAuth();
-	}, [country]);
+	}, [country]); //only update user to state when country has been fetched 
 
 	return (
 		//different context providers for country and users instead of a single value object for performance reasons
