@@ -74,6 +74,18 @@ export async function getAllScreensCount() {
 
 //get individual screens of the newest version content
 
+export async function updateUserProfileInfo(user, country) {
+	
+	const { error } = await supabase
+		.from('profile')
+		.update({ country: country })
+		.eq('id', user.id);
+		if (error) {
+			console.log(error);
+		}
+	
+}
+
 export async function getCountry(brandName: string | string[]) {
 	//gets country i.e Nigeria | international of the different brands
 
@@ -89,7 +101,44 @@ export async function getCountry(brandName: string | string[]) {
 	return data[0];
 }
 
-export async function getScreensById(id, page, query) {
+export async function getScreensById(id, page, query, user, brandCountry='Nigeria') {
+	let country;
+	const userdata = await checkSubscribedUSer(user);
+
+	if (user) {
+		// get user country information
+		const { data, error } = await supabase
+			.from('profile')
+			.select('country')
+			.eq('id', user.id);
+		country = data[0]['country'];
+		if (error) {
+			console.log(error);
+		}
+	
+	}
+
+	//limit screens for unauthenticated users or international unpaid users
+	if (
+		!userdata ||
+		(userdata.event !== 'subscription.create' &&
+			(country !== 'Nigeria') &&
+			brandCountry !== 'International')
+	) {
+		const { data, error } = await supabase
+			.from('screenImages')
+			.select('*')
+			.order('url', { ascending: true })
+			.limit(28)
+			.eq('screenId', id)
+			.eq('version', 1);
+			if (error) {
+				console.log(error);
+			}
+		
+		return data;
+	}
+
 	let limit = 27;
 	let limitMaxRange = page * limit;
 	let limitMinRange = page * limit - limit;

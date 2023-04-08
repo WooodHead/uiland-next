@@ -1716,22 +1716,24 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@supabase/auth-helpers-nextjs@^0.5.4":
-  "integrity" "sha512-Xm3BMDOYPbNyuh8UXDRgBDc3JkeM5S2PfuC1jFJ73CCay4YiH1YxTz06Cvtp+vLH432qdjnqH+49ehVvUehPnQ=="
-  "resolved" "https://registry.npmjs.org/@supabase/auth-helpers-nextjs/-/auth-helpers-nextjs-0.5.4.tgz"
-  "version" "0.5.4"
+"@supabase/auth-helpers-nextjs@^0.5.9":
+  "integrity" "sha512-OBmltVuPNFbtznBAgQgOFaWh3dO6rRmU7i77TVzEkbViZoK2ylzlKPIORg9Wh+4ZgYbP2QMsI5GzEtAz+aNTvA=="
+  "resolved" "https://registry.npmjs.org/@supabase/auth-helpers-nextjs/-/auth-helpers-nextjs-0.5.9.tgz"
+  "version" "0.5.9"
   dependencies:
-    "@supabase/auth-helpers-shared" "0.2.4"
+    "@supabase/auth-helpers-shared" "0.3.3"
 
 "@supabase/auth-helpers-react@^0.3.1":
   "integrity" "sha512-g3SFv08Dz9FapNif/ZY1b7qKGlMJDyTLSayHBz3kb3FuYxg7aLWgQtydDhm5AGbc0XtvpIBuhGTIOVevwpdosA=="
   "resolved" "https://registry.npmjs.org/@supabase/auth-helpers-react/-/auth-helpers-react-0.3.1.tgz"
   "version" "0.3.1"
 
-"@supabase/auth-helpers-shared@0.2.4":
-  "integrity" "sha512-c+hi3N6DhjPTzjXGOokre4gmMZOqt0f1ORrwZwi2s07pk3cbkmn77DwwVtlYMNi3oZNYRQqAfxJu83UzpJrrmg=="
-  "resolved" "https://registry.npmjs.org/@supabase/auth-helpers-shared/-/auth-helpers-shared-0.2.4.tgz"
-  "version" "0.2.4"
+"@supabase/auth-helpers-shared@0.3.3":
+  "integrity" "sha512-ZwZGffApfyz9MiT3knnZoF1DMWE56H/Q0Mrsn22J9ubhss7/+e7TP3dChxxwlUYqtDmjmLV6OV8W0BANENfUew=="
+  "resolved" "https://registry.npmjs.org/@supabase/auth-helpers-shared/-/auth-helpers-shared-0.3.3.tgz"
+  "version" "0.3.3"
+  dependencies:
+    "js-base64" "^3.7.5"
 
 "@supabase/functions-js@^2.0.0":
   "integrity" "sha512-ozb7bds2yvf5k7NM2ZzUkxvsx4S4i2eRKFSJetdTADV91T65g4gCzEs9L3LUXSrghcGIkUaon03VPzOrFredqg=="
@@ -5463,6 +5465,11 @@
   "integrity" "sha512-9FzQjJ7MATs1tSpnco1K6ayiYE3figslrXA72G2HQ/n76RzvYlofyi5QM+iX4YRs/pu3yzxlVQSST23+dMDknw=="
   "resolved" "https://registry.npmjs.org/jmespath/-/jmespath-0.16.0.tgz"
   "version" "0.16.0"
+
+"js-base64@^3.7.5":
+  "integrity" "sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA=="
+  "resolved" "https://registry.npmjs.org/js-base64/-/js-base64-3.7.5.tgz"
+  "version" "3.7.5"
 
 "js-sdsl@^4.1.4":
   "integrity" "sha512-08bOAKweV2NUC1wqTtf3qZlnpOX/R2DU9ikpjOHs0H+ibQv3zpncVQg6um4uYtRtrwIX8M4Nh3ytK4HGlYAq7Q=="

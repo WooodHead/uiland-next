@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { createContext, useEffect, useState } from 'react';
-import { supabase, getSession } from '../supabase';
+import { supabase, getSession, updateUserProfileInfo } from '../supabase';
 import axios from 'axios';
 export const UserContext = createContext(null);
 export const UserCountryContext = createContext(null);
@@ -44,10 +44,11 @@ export const UserContextProvider = ({ children }) => {
 		}
 	};
 
+
 	//supabase auth listener for changes
 	useEffect(() => {
 		async function authListener() {
-			supabase.auth.onAuthStateChange((event) => {
+			supabase.auth.onAuthStateChange((event,session) => {
 				if (event == 'SIGNED_OUT') {
 					setUser(null);
 					router.push('/');
@@ -62,12 +63,13 @@ export const UserContextProvider = ({ children }) => {
 		const supabaseAuth = async () => {
 			const session = await getSession();
 			if (session) {
+				await updateUserProfileInfo(session.user,country) //update the user profile document with the user's visiting country
 				return setUser(session.user);
 			}
 			return setUser(null);
 		};
 		supabaseAuth();
-	}, []);
+	}, [country]); //only update user to state when country has been fetched 
 
 	return (
 		//different context providers for country and users instead of a single value object for performance reasons

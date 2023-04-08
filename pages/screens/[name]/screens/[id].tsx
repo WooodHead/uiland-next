@@ -7,6 +7,7 @@ import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
 // Components
 import { BottomSheet, Pill, Toast } from '../../../../components/uiElements';
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 import AddToBookmark from '../../../../components/AddToBookmark';
 import CloseIcon from '../../../../components/CloseModalIcon';
@@ -54,15 +55,21 @@ const SinglePage = ({ screens, brandcountry }) => {
 		//logic for showing payment banner
 
 		checkSubscribedUSer(user).then((data) => {
-			if (!data)
-				setShowPaymentBanner(
-					true
-				); // this means if no data is returned show the payment banner... this means that the user is not logged in. The Payment banner would prompt the user to login in this case
-			else if (
-				data.event !== 'subscription.create' &&
-				brandcountry === 'Nigeria'
-			)
-				setShowPaymentBanner(true); // this means if the authenticated user has no active subscription and is viewing a nigerian app show banner
+			// this means if no data is returned show the payment banner... this means that the user is not logged in. The Payment banner would prompt the user to login in this case
+
+			if (!data) return setShowPaymentBanner(true);
+			// if there is a user but the user is not a paid user and user is  from nigeria
+			else if (!data.event && (country === 'NG' || country === 'Nigeria')) {
+				return setShowPaymentBanner(false);
+			} else if (
+			// if there is a user but the user is not a paid user and user is an international user trying to visit a nigerian
+				!data.event &&
+				brandcountry === 'Nigeria' &&
+				(country !== 'NG' || country !== 'Nigeria')
+			) {
+				return setShowPaymentBanner(true);
+			}
+			return setShowPaymentBanner(false);
 		});
 	}, [user, country]);
 
@@ -1052,16 +1059,28 @@ const ElementsInCategoryContainer = styled.div`
 	}
 `;
 
-export const getServerSideProps: GetServerSideProps = async ({
-	query,
-	params,
-}) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const { query, params, req, res } = ctx;
 	const { name } = query;
 	let screens;
+
 	const page = query.page || 1;
 	const completeID = params.id + page.toString() + query.version;
 	const { country: brandcountry } = await getCountry(name); //get the country associated with a brand using the superbase function getCountry
 
+	//GET USER OBJECT SERVER SIDE
+	// Create authenticated Supabase Client
+	const supabase = createServerSupabaseClient(ctx);
+
+	// Check if we have a session
+	const {
+		data: { session },
+	} = await supabase.auth.getSession();
+
+	//get user belonging to that session
+	const user = session ? session.user : null;
+
+	// CACHING LOGIC
 	const screensCacheObject = {};
 
 	const client = new Redis(process.env.REDIS_URL); //get redis instance
@@ -1069,7 +1088,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 	const CachedResults = JSON.parse(await client.get('screensCachedByID')); //get  screens data
 
 	if (!CachedResults) {
-		screens = await getScreensById(params.id, page, query); // if there are no cached results retrieve from supabase
+		screens = await getScreensById(params.id, page, query, user, brandcountry); // if there are no cached results retrieve from supabase
 		screensCacheObject[completeID] = screens; //store cached results to instance... the to differentiate different screens for the different pages a unique identifier using the
 		// screensid, page number and screens version is used. the structure of the data in upstach would be as follows
 
@@ -1089,7 +1108,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 		screens = CachedResults[completeID];
 		console.log('read from Redis cache');
 	} else if (CachedResults && !(completeID in CachedResults)) {
-		screens = await getScreensById(params.id, page, query);
+		screens = await getScreensById(params.id, page, query, user, brandcountry);
 		CachedResults[completeID] = screens;
 		client.set('screensCachedByID', JSON.stringify(CachedResults), 'EX', 3600);
 		console.log('read from supabase');

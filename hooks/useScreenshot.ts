@@ -193,7 +193,7 @@ const useScreenshot = (screens: any) => {
 				pathname: path,
 				query: query,
 			});
-			const data = await getScreensById(router.query.id, page, router.query);
+			const data = await getScreensById(router.query.id, page, router.query,user);
 
 			setLimitedScreens(
 				JSON.stringify(data) === JSON.stringify([]) ? screens : data
@@ -229,7 +229,7 @@ const useScreenshot = (screens: any) => {
 				pathname: path,
 				query: query,
 			});
-			const data = await getScreensById(router.query.id, page, router.query);
+			const data = await getScreensById(router.query.id, page, router.query,user);
 
 			setLimitedScreens(
 				JSON.stringify(data) === JSON.stringify([]) ? screens : data
@@ -266,7 +266,7 @@ const useScreenshot = (screens: any) => {
 				pathname: path,
 				query: query,
 			});
-			const data = await getScreensById(router.query.id, id, router.query);
+			const data = await getScreensById(router.query.id, id, router.query,user);
 
 			setLimitedScreens(
 				JSON.stringify(data) === JSON.stringify([]) ? screens : data
