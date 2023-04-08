@@ -103,7 +103,8 @@ export async function getCountry(brandName: string | string[]) {
 export async function getScreensById(id, page, query, user) {
 	const userdata = await checkSubscribedUSer(user);
 
-	if ((!userdata || userdata.event !== 'subscription.create')&& (user.country !== 'Nigeria' ||user.country !== 'Ng'  )) {
+	//limit screens for unauthenticated users or international unpaid users 
+	if ((!userdata || userdata.event !== 'subscription.create')&& (user.country !== 'Nigeria' || user.country !== 'Ng'  )) {
 		const { data, error } = await supabase
 			.from('screenImages')
 			.select('*')
