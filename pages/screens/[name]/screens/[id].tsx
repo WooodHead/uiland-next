@@ -1078,7 +1078,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
 	const user = session ? session.user : null;
 
-	screens = await getScreensById(params.id, page, query, user);
+	screens = await getScreensById(params.id, page, query, user,brandcountry);
 
 	console.log(screens.length);
 

@@ -69,7 +69,7 @@ export const UserContextProvider = ({ children }) => {
 			return setUser(null);
 		};
 		supabaseAuth();
-	}, []);
+	}, [country]);
 
 	return (
 		//different context providers for country and users instead of a single value object for performance reasons

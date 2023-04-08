@@ -74,16 +74,13 @@ export async function getAllScreensCount() {
 
 //get individual screens of the newest version content
 
-export async function updateUserProfileInfo(user,country) {
+export async function updateUserProfileInfo(user, country) {
+	console.log(country);
 	const { error } = await supabase
-	.from('profile')
-	.update({ country: country })
-		.eq('id', user.id)
+		.from('profile')
+		.update({ country: country })
+		.eq('id', user.id);
 }
-  
-  
-  
-
 
 export async function getCountry(brandName: string | string[]) {
 	//gets country i.e Nigeria | international of the different brands
@@ -100,11 +97,26 @@ export async function getCountry(brandName: string | string[]) {
 	return data[0];
 }
 
-export async function getScreensById(id, page, query, user) {
+export async function getScreensById(id, page, query, user, brandCountry) {
+	let country;
 	const userdata = await checkSubscribedUSer(user);
 
-	//limit screens for unauthenticated users or international unpaid users 
-	if ((!userdata || userdata.event !== 'subscription.create')&& (user.country !== 'Nigeria' || user.country !== 'Ng'  )) {
+	if (user) {
+		// get user country information
+		const { data, error } = await supabase
+			.from('profile')
+			.select('country')
+			.eq('id', user.id);
+		country = data[0]['country'];
+	}
+
+	//limit screens for unauthenticated users or international unpaid users
+	if (
+		!userdata ||
+		(userdata.event !== 'subscription.create' &&
+			(country !== 'Nigeria') &&
+			brandCountry !== 'International')
+	) {
 		const { data, error } = await supabase
 			.from('screenImages')
 			.select('*')
