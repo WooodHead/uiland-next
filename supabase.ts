@@ -125,13 +125,15 @@ export async function getScreensById(id, page, query, user, brandCountry='Nigeri
 			(country !== 'Nigeria') &&
 			brandCountry !== 'International')
 	) {
+
+		console.log('version',query.version)
 		const { data, error } = await supabase
 			.from('screenImages')
 			.select('*')
 			.order('url', { ascending: true })
 			.limit(28)
 			.eq('screenId', id)
-			.eq('version', 1);
+			.eq('version', query.version );
 			if (error) {
 				console.log(error);
 			}
