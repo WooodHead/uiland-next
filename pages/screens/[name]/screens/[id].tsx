@@ -7,6 +7,7 @@ import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
 // Components
 import { BottomSheet, Pill, Toast } from '../../../../components/uiElements';
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 import AddToBookmark from '../../../../components/AddToBookmark';
 import CloseIcon from '../../../../components/CloseModalIcon';
@@ -50,19 +51,23 @@ const SinglePage = ({ screens, brandcountry }) => {
 	const user = useContext(UserContext);
 	const country = useContext(UserCountryContext);
 
+
+
 	useEffect(() => {
 		//logic for showing payment banner
-
 		checkSubscribedUSer(user).then((data) => {
-			if (!data)
-				setShowPaymentBanner(
-					true
-				); // this means if no data is returned show the payment banner... this means that the user is not logged in. The Payment banner would prompt the user to login in this case
+			if (!data) return setShowPaymentBanner(true);
+			// this means if no data is returned show the payment banner... this means that the user is not logged in. The Payment banner would prompt the user to login in this case
+			else if (!data.event && (country === 'NG' || country === 'Nigeria')) {
+				return setShowPaymentBanner(false);
+			}
 			else if (
-				data.event !== 'subscription.create' &&
-				brandcountry === 'Nigeria'
-			)
-				setShowPaymentBanner(true); // this means if the authenticated user has no active subscription and is viewing a nigerian app show banner
+				!data.event && brandcountry === 'Nigeria' &&
+				(country !== 'NG' || country !== 'Nigeria')
+			) {
+				return setShowPaymentBanner(true);
+			}
+		return setShowPaymentBanner(false);
 		});
 	}, [user, country]);
 
@@ -112,6 +117,7 @@ const SinglePage = ({ screens, brandcountry }) => {
 		pillStatus,
 		timeHost,
 	} = useScreenshot(screens);
+
 
 	const [visits, setVisits] = useState<number>();
 	const [active, setActive] = useState<number>(1);
@@ -1052,48 +1058,63 @@ const ElementsInCategoryContainer = styled.div`
 	}
 `;
 
-export const getServerSideProps: GetServerSideProps = async ({
-	query,
-	params,
-}) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const { query, params, req, res } = ctx;
 	const { name } = query;
 	let screens;
+
 	const page = query.page || 1;
 	const completeID = params.id + page.toString() + query.version;
 	const { country: brandcountry } = await getCountry(name); //get the country associated with a brand using the superbase function getCountry
 
-	const screensCacheObject = {};
+	//GET USER OBJECT SERVER SIDE
+	// Create authenticated Supabase Client
+	const supabase = createServerSupabaseClient(ctx);
 
-	const client = new Redis(process.env.REDIS_URL); //get redis instance
+	// Check if we have a session
+	const {
+		data: { session },
+	} = await supabase.auth.getSession();
 
-	const CachedResults = JSON.parse(await client.get('screensCachedByID')); //get  screens data
+	const user = session ? session.user : null;
 
-	if (!CachedResults) {
-		screens = await getScreensById(params.id, page, query); // if there are no cached results retrieve from supabase
-		screensCacheObject[completeID] = screens; //store cached results to instance... the to differentiate different screens for the different pages a unique identifier using the
-		// screensid, page number and screens version is used. the structure of the data in upstach would be as follows
+	screens = await getScreensById(params.id, page, query, user);
 
-		// {
-		// 	screensCachedByID : screens[]
-		// }
+	console.log(screens.length);
 
-		client.set(
-			'screensCachedByID',
-			JSON.stringify(screensCacheObject),
-			'EX',
-			3600
-		);
-		console.log('read from supabase');
-	} else if (completeID in CachedResults) {
-		// if cache already exists fetch the screens for that unique identifier built from the screen identity, page number and screen version
-		screens = CachedResults[completeID];
-		console.log('read from Redis cache');
-	} else if (CachedResults && !(completeID in CachedResults)) {
-		screens = await getScreensById(params.id, page, query);
-		CachedResults[completeID] = screens;
-		client.set('screensCachedByID', JSON.stringify(CachedResults), 'EX', 3600);
-		console.log('read from supabase');
-	}
+	// CACHING LOGIC
+	// const screensCacheObject = {};
+
+	// const client = new Redis(process.env.REDIS_URL); //get redis instance
+
+	// const CachedResults = JSON.parse(await client.get('screensCachedByID')); //get  screens data
+
+	// if (!CachedResults) {
+	// 	screens = await getScreensById(params.id, page, query,user); // if there are no cached results retrieve from supabase
+	// 	screensCacheObject[completeID] = screens; //store cached results to instance... the to differentiate different screens for the different pages a unique identifier using the
+	// 	// screensid, page number and screens version is used. the structure of the data in upstach would be as follows
+
+	// 	// {
+	// 	// 	screensCachedByID : screens[]
+	// 	// }
+
+	// 	client.set(
+	// 		'screensCachedByID',
+	// 		JSON.stringify(screensCacheObject),
+	// 		'EX',
+	// 		3600
+	// 	);
+	// 	console.log('read from supabase');
+	// } else if (completeID in CachedResults) {
+	// 	// if cache already exists fetch the screens for that unique identifier built from the screen identity, page number and screen version
+	// 	screens = CachedResults[completeID];
+	// 	console.log('read from Redis cache');
+	// } else if (CachedResults && !(completeID in CachedResults)) {
+	// 	screens = await getScreensById(params.id, page, query,user);
+	// 	CachedResults[completeID] = screens;
+	// 	client.set('screensCachedByID', JSON.stringify(CachedResults), 'EX', 3600);
+	// 	console.log('read from supabase');
+	// }
 
 	return {
 		props: {

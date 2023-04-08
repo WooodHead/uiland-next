@@ -18,6 +18,7 @@ import Redis from 'ioredis';
 import Tab from '../components/TabSection';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 const Home = ({ screens }) => {
 	const { filterTerm, filterName } = useContext(ScreensContext);
@@ -149,7 +150,8 @@ const Home = ({ screens }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ res, req }) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const {req,res}= ctx
 	res.setHeader(
 		'Cache-Control',
 		'public, s-maxage=10, stale-while-revalidate=59'
@@ -174,6 +176,8 @@ export const getServerSideProps: GetServerSideProps = async ({ res, req }) => {
 		client.set('screens', JSON.stringify(screens), 'EX', 3600);
 		console.log('read from supabase');
 	}
+
+
 
 	return {
 		props: {
