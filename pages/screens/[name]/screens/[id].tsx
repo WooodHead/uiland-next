@@ -1080,39 +1080,43 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	//get user belonging to that session
 	const user = session ? session.user : null;
 
-	// CACHING LOGIC
-	const screensCacheObject = {};
 
-	const client = new Redis(process.env.REDIS_URL); //get redis instance
+	screens = await getScreensById(params.id, page, query, user, brandcountry);
 
-	const CachedResults = JSON.parse(await client.get('screensCachedByID')); //get  screens data
 
-	if (!CachedResults) {
-		screens = await getScreensById(params.id, page, query, user, brandcountry); // if there are no cached results retrieve from supabase
-		screensCacheObject[completeID] = screens; //store cached results to instance... the to differentiate different screens for the different pages a unique identifier using the
-		// screensid, page number and screens version is used. the structure of the data in upstach would be as follows
+	// // CACHING LOGIC
+	// const screensCacheObject = {};
 
-		// {
-		// 	screensCachedByID : screens[]
-		// }
+	// const client = new Redis(process.env.REDIS_URL); //get redis instance
 
-		client.set(
-			'screensCachedByID',
-			JSON.stringify(screensCacheObject),
-			'EX',
-			3600
-		);
-		console.log('read from supabase');
-	} else if (completeID in CachedResults) {
-		// if cache already exists fetch the screens for that unique identifier built from the screen identity, page number and screen version
-		screens = CachedResults[completeID];
-		console.log('read from Redis cache');
-	} else if (CachedResults && !(completeID in CachedResults)) {
-		screens = await getScreensById(params.id, page, query, user, brandcountry);
-		CachedResults[completeID] = screens;
-		client.set('screensCachedByID', JSON.stringify(CachedResults), 'EX', 3600);
-		console.log('read from supabase');
-	}
+	// const CachedResults = JSON.parse(await client.get('screensCachedByID')); //get  screens data
+
+	// if (!CachedResults) {
+	// 	screens = await getScreensById(params.id, page, query, user, brandcountry); // if there are no cached results retrieve from supabase
+	// 	screensCacheObject[completeID] = screens; //store cached results to instance... the to differentiate different screens for the different pages a unique identifier using the
+	// 	// screensid, page number and screens version is used. the structure of the data in upstach would be as follows
+
+	// 	// {
+	// 	// 	screensCachedByID : screens[]
+	// 	// }
+
+	// 	client.set(
+	// 		'screensCachedByID',
+	// 		JSON.stringify(screensCacheObject),
+	// 		'EX',
+	// 		3600
+	// 	);
+	// 	console.log('read from supabase');
+	// } else if (completeID in CachedResults) {
+	// 	// if cache already exists fetch the screens for that unique identifier built from the screen identity, page number and screen version
+	// 	screens = CachedResults[completeID];
+	// 	console.log('read from Redis cache');
+	// } else if (CachedResults && !(completeID in CachedResults)) {
+	// 	screens = await getScreensById(params.id, page, query, user, brandcountry);
+	// 	CachedResults[completeID] = screens;
+	// 	client.set('screensCachedByID', JSON.stringify(CachedResults), 'EX', 3600);
+	// 	console.log('read from supabase');
+	// }
 
 	return {
 		props: {

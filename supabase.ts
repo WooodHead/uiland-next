@@ -75,15 +75,13 @@ export async function getAllScreensCount() {
 //get individual screens of the newest version content
 
 export async function updateUserProfileInfo(user, country) {
-	
 	const { error } = await supabase
 		.from('profile')
 		.update({ country: country })
 		.eq('id', user.id);
-		if (error) {
-			console.log(error);
-		}
-	
+	if (error) {
+		console.log(error);
+	}
 }
 
 export async function getCountry(brandName: string | string[]) {
@@ -101,7 +99,13 @@ export async function getCountry(brandName: string | string[]) {
 	return data[0];
 }
 
-export async function getScreensById(id, page, query, user, brandCountry='Nigeria') {
+export async function getScreensById(
+	id,
+	page,
+	query,
+	user,
+	brandCountry = 'Nigeria'
+) {
 	let country;
 	const userdata = await checkSubscribedUSer(user);
 
@@ -115,29 +119,26 @@ export async function getScreensById(id, page, query, user, brandCountry='Nigeri
 		if (error) {
 			console.log(error);
 		}
-	
 	}
 
 	//limit screens for unauthenticated users or international unpaid users
 	if (
 		!userdata ||
 		(userdata.event !== 'subscription.create' &&
-			(country !== 'Nigeria') &&
+			country !== 'Nigeria' &&
 			brandCountry !== 'International')
 	) {
-
-		console.log('version',query.version)
 		const { data, error } = await supabase
 			.from('screenImages')
 			.select('*')
 			.order('url', { ascending: true })
 			.limit(28)
 			.eq('screenId', id)
-			.eq('version', query.version );
-			if (error) {
-				console.log(error);
-			}
-		
+			.eq('version', query.version || 1);
+		if (error) {
+			console.log(error);
+		}
+
 		return data;
 	}
 
