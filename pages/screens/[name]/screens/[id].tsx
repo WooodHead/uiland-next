@@ -7,6 +7,7 @@ import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
 // Components
 import { BottomSheet, Pill, Toast } from '../../../../components/uiElements';
+import { getRelatedScreensByID } from '../../../../supabase';
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 
 import AddToBookmark from '../../../../components/AddToBookmark';
@@ -20,6 +21,7 @@ import Modal from '../../../../components/modal';
 import { pillsTypes } from '../../../../components/uiElements/pills';
 import Select from '../../../../components/uiElements/select';
 import { PopContext } from '../../../../context/PopContext';
+import Viewmore from '../../../../components/ViewMore';
 
 //hooks
 
@@ -46,7 +48,7 @@ import {
 	UserCountryContext,
 } from '../../../../context/authContext';
 
-const SinglePage = ({ screens, brandcountry }) => {
+const SinglePage = ({ screens, brandcountry, screensBYID }) => {
 	const [showPaymentBanner, setShowPaymentBanner] = useState(false);
 	const user = useContext(UserContext);
 	const country = useContext(UserCountryContext);
@@ -364,7 +366,6 @@ const SinglePage = ({ screens, brandcountry }) => {
 	return (
 		<>
 			{/* for SEO */}
-
 			<Head>
 				<title>{headerInfo.name} app screens</title>
 				<meta
@@ -663,25 +664,29 @@ const SinglePage = ({ screens, brandcountry }) => {
 			/>
 			{/* remove pagination if user is an unsuscribed  international user on a paid app */}
 			{!showPaymentBanner && (
-				<ReactPaginate
-					marginPagesDisplayed={5}
-					pageRangeDisplayed={5}
-					previousLabel={'< Previous'}
-					nextLabel={'Next >'}
-					breakLabel={'...'}
-					forcePage={(Number(router.query.page) || 1) - 1}
-					pageCount={pageCount}
-					onPageChange={handlePagination}
-					disableInitialCallback={true}
-					containerClassName={'paginate-wrap'}
-					pageClassName={'paginate-li'}
-					pageLinkClassName={'paginate-a'}
-					activeClassName={'paginate-active'}
-					nextLinkClassName={'paginate-next-a'}
-					previousLinkClassName={'paginate-prev-a'}
-					breakLinkClassName={'paginate-break-a'}
-					disabledClassName={'paginate-disabled'}
-				/>
+				<>
+					<ReactPaginate
+						marginPagesDisplayed={5}
+						pageRangeDisplayed={5}
+						previousLabel={'< Previous'}
+						nextLabel={'Next >'}
+						breakLabel={'...'}
+						forcePage={(Number(router.query.page) || 1) - 1}
+						pageCount={pageCount}
+						onPageChange={handlePagination}
+						disableInitialCallback={true}
+						containerClassName={'paginate-wrap'}
+						pageClassName={'paginate-li'}
+						pageLinkClassName={'paginate-a'}
+						activeClassName={'paginate-active'}
+						nextLinkClassName={'paginate-next-a'}
+						previousLinkClassName={'paginate-prev-a'}
+						breakLinkClassName={'paginate-break-a'}
+						disabledClassName={'paginate-disabled'}
+					/>
+					
+					<Viewmore screens={screensBYID} /> 
+				</>
 			)}
 			{/* add payment banner  if user is an unsuscribed  international user on a paid app */}
 			{showPaymentBanner && <PaymentBanner country={country} />}
@@ -1132,21 +1137,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 		}
 	} catch (error) {
 		console.log(error);
-		
+
 		return {
 			redirect: {
-			  destination: '/',
-			  permanent: false,
+				destination: '/',
+				permanent: false,
 			},
-		  }
-		  
+		};
 	}
 
-	
+	const screensBYID = await getRelatedScreensByID(params.id); //fetch brand
+
 	return {
 		props: {
 			screens,
 			brandcountry,
+			screensBYID,
 		},
 	};
 };

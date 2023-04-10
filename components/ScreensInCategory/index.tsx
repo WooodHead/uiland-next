@@ -3,8 +3,11 @@ import styled from 'styled-components';
 import EmptyState from '../EmptyState';
 import { BrandDescription, BrandLogo, Pill, Screenshot } from '../uiElements';
 import { pillsTypes } from '../uiElements/pills';
+import { useContext } from 'react';
+import { ScreensContext } from '../../context/screensContex';
+import { useEffect } from 'react';
 
-const ScreensInCategory = ({ screens }) => {
+const ScreensInCategory = ({ screens,viewmore=false}) => {
 	return (
 		<>
 			<CategorySectionContainer>
@@ -13,7 +16,7 @@ const ScreensInCategory = ({ screens }) => {
 					{JSON.stringify(screens) !== JSON.stringify([]) ? (
 						screens?.map(
 							({ startScreens, name, category, country, logo, id }) => (
-								<ScreenShotContainer key={id}>
+								<ScreenShotContainer key={id} viewmore = {viewmore} >
 									<Link
 										href={`/screens/${name.toLowerCase()}/screens/${id}`}
 										passHref
@@ -66,7 +69,7 @@ const CategorySectionWrapper = styled.div`
 	justify-content: space-between;
 	flex-wrap: wrap;
 	margin: auto;
-	gap: 2em;
+	gap:2em;
 	width: 90%;
 	max-width: 1300px;
 
@@ -79,13 +82,20 @@ const CategorySectionWrapper = styled.div`
 	}
 `;
 
-const ScreenShotContainer = styled.div`
+const ScreenShotContainer = styled.div<{ viewmore: boolean }>`
 	margin-top: 2em;
 	@media (min-width: 768px) {
-		width: 45%;
+		width:45%;
 		min-height: 100%;
 		margin-top: 0;
 	}
+	@media (min-width: 900px) {
+		width:${(props) => props.viewmore ? 31 : 45 }%;
+		max-width: ${(props) => props.viewmore ? 800 : '' }%;
+		min-height: 100%;
+		margin-top: 0;
+	}
+	
 `;
 
 const ScreenshotContainerTop = styled.div`
