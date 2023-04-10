@@ -601,3 +601,34 @@ export const numberOfCopyImage = async (user) => {
 //   .eq('screenId', 'b76461af-34f9-4523-a892-b4991dfa364a')
 //   return error
 // }
+
+export const getRelatedScreensByCategory = async (category, id) => {
+	const { error, data } = await supabase
+		.from('Screens')
+		.select('*')
+		.eq('category', category)
+		.neq('id', id);
+
+	if (error) {
+		console.log(error);
+	}
+
+	return data;
+};
+
+export const getRelatedScreensByID = async (id) => {
+	//get category of brand with that id
+	const { error, data } = await supabase
+		.from('Screens')
+		.select('category')
+		.eq('id', id);
+
+	if (error) {
+		console.log(error);
+	}
+
+	const { category } = data[0];
+	const screensData = await getRelatedScreensByCategory(category, id); //get brands that are in the same category as the brand with the id viewed
+
+	return screensData; //this can either be an empty array or an array of screens
+};

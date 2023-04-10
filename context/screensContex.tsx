@@ -39,6 +39,7 @@ export const ScreensContextProvider = ({ children }) => {
 				setFilterItemName,
 				filterName,
 				filterTerm,
+				setScreens
 			}}
 		>
 			{children}
