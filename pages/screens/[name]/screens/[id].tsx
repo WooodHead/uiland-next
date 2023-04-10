@@ -120,6 +120,7 @@ const SinglePage = ({ screens, brandcountry, screensBYID }) => {
 		onClickPill,
 		pillStatus,
 		timeHost,
+		getPeriod,
 	} = useScreenshot(screens);
 
 	const [visits, setVisits] = useState<number>();
@@ -130,7 +131,7 @@ const SinglePage = ({ screens, brandcountry, screensBYID }) => {
 	const [viewMoreData, setViewMoreData] = useState([]);
 
 	const [actualCount, setActualCount] = useState<number>(0);
-	const [getPeriod, setGetPeriod] = useState([]);
+
 	// The back-to-top button is hidden at the beginning
 	const [showButton, setShowButton] = useState(false);
 	const [revealTooltip, setRevealTooltip] = useState<number>(0);
@@ -277,41 +278,6 @@ const SinglePage = ({ screens, brandcountry, screensBYID }) => {
 			}
 		});
 	}, []);
-
-	useEffect(() => {
-		let monthNames = [
-			'January',
-			'February',
-			'March',
-			'April',
-			'May',
-			'June',
-			'July',
-			'August',
-			'September',
-			'October',
-			'November',
-			'December',
-		];
-
-		//this is to remove the last date from the travel history which
-		//isnt needed in the UI because it is a date that is used for comparison to find the oldest travel history
-		timeHost.pop();
-
-		timeHost.forEach((time) => {
-			//gets the month
-			const month = new Date(time).getMonth();
-			//gets the year
-			const year = new Date(time).getFullYear();
-			//merges the month and year together and displays the month's name
-			const fullDate = monthNames[month] + ' ' + year;
-			//map them into the getperiod state
-			setGetPeriod((prev) => {
-				return [...prev, fullDate];
-			});
-		});
-		//adding this dependency works for now
-	}, [timeHost]);
 
 	//get view more screens
 	useEffect(() => {
@@ -684,8 +650,8 @@ const SinglePage = ({ screens, brandcountry, screensBYID }) => {
 						breakLinkClassName={'paginate-break-a'}
 						disabledClassName={'paginate-disabled'}
 					/>
-					
-					<Viewmore screens={screensBYID} /> 
+
+					<Viewmore screens={screensBYID} />
 				</>
 			)}
 			{/* add payment banner  if user is an unsuscribed  international user on a paid app */}

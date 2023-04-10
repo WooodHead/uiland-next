@@ -86,7 +86,7 @@ const useScreenshot = (screens: any) => {
 
 	//state to manage the bookmark id of the album of images when clicked
 	const [getAlbumId, setGetAlbumId] = useState([]);
-
+	const [getPeriod, setGetPeriod] = useState([]);
 	// toast state
 	const [toastPendingText, setToastPendingText] = useState<string>('Saving');
 	const [toastSuccessText, setToastSuccessText] = useState<string>('Saved 🎉');
@@ -314,9 +314,54 @@ const useScreenshot = (screens: any) => {
 		const getHeaderInfo = async () => {
 			const data = await getScreensProperties(router.query.id as string);
 			setTimeHost(data.timeTravel);
+		
 		};
 		getHeaderInfo();
-	}, [router.query.id]);
+	
+	}, [router.query.name]);
+
+
+	useEffect(() => {
+		let monthNames = [
+			'January',
+			'February',
+			'March',
+			'April',
+			'May',
+			'June',
+			'July',
+			'August',
+			'September',
+			'October',
+			'November',
+			'December',
+		];
+
+		//this is to remove the last date from the travel history which
+		//isnt needed in the UI because it is a date that is used for comparison to find the oldest travel history
+		timeHost.pop();
+
+		timeHost.forEach((time) => {
+			//gets the month
+			const month = new Date(time).getMonth();
+			//gets the year
+			const year = new Date(time).getFullYear();
+			//merges the month and year together and displays the month's name
+			const fullDate = monthNames[month] + ' ' + year;
+			//map them into the getperiod state
+
+			if (router.query.name === 'payday') {
+				setGetPeriod((prev) => {
+					return [...prev, fullDate];
+				});
+			}
+			else {
+				setGetPeriod([fullDate]);
+			}
+	
+		});
+		//adding this dependency works for now
+	}, [timeHost]);
 
 	//checker to empty the bookmark names select field if the user has deleted all his bookmarked images
 	useEffect(() => {
@@ -721,6 +766,7 @@ const useScreenshot = (screens: any) => {
 		generateZIP,
 		onClickPill,
 		pillStatus,
+		getPeriod
 	};
 };
 
