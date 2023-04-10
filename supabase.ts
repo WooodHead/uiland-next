@@ -99,6 +99,20 @@ export async function getCountry(brandName: string | string[]) {
 	return data[0];
 }
 
+export async function getHighestversionofBrand(id) {
+	const { data, error } = await supabase
+		.from('screenImages')
+		.select('version')
+		.order('version', { ascending: false })
+		.eq('screenId', id)
+		.limit(1);
+	if (error) {
+		console.log(error);
+	}
+
+	return data[0]['version'];
+}
+
 export async function getScreensById(
 	id,
 	page,
@@ -108,6 +122,7 @@ export async function getScreensById(
 ) {
 	let country;
 	const userdata = await checkSubscribedUSer(user);
+	const defaultVersion = await getHighestversionofBrand(id);
 
 	if (user) {
 		// get user country information
@@ -134,7 +149,7 @@ export async function getScreensById(
 			.order('url', { ascending: true })
 			.limit(28)
 			.eq('screenId', id)
-			.eq('version', query.version || 1);
+			.eq('version', query.version || defaultVersion);
 		if (error) {
 			console.log(error);
 		}
