@@ -684,7 +684,8 @@ const SinglePage = ({ screens, brandcountry, screensBYID }) => {
 						breakLinkClassName={'paginate-break-a'}
 						disabledClassName={'paginate-disabled'}
 					/>
-					<Viewmore screens={screensBYID} />
+					
+					<Viewmore screens={screensBYID} /> 
 				</>
 			)}
 			{/* add payment banner  if user is an unsuscribed  international user on a paid app */}

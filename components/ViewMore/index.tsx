@@ -6,8 +6,11 @@ import ScreensInCategory from '../ScreensInCategory';
 import { BsArrowLeft } from 'react-icons/bs';
 import Link from 'next/link';
 const Viewmore = ({ screens }) => {
+
+	//get screens from the server then format on the client
 	const [formattedScreen, setFormattedScreen] = useState(screens);
 
+	//function for formatting the screens received i.e choosing random brands from the same category if screens is an array of screens or choosing random brands of different categories if screens is an empty array 
 	const randomScreens = async () => {
 		setFormattedScreen(await formatScreens(screens));
 	};
@@ -24,7 +27,8 @@ const Viewmore = ({ screens }) => {
 			<Header>
 				View Screenshots from other {screens[0] && screens[0].category} Brands
 			</Header>
-			<ScreensInCategory screens={formattedScreen} viewmore={true} />
+			{/* use the same screensIncategory component as the homepage but pass a viewmore prop so it is styled differently */}
+			<ScreensInCategory screens={formattedScreen} viewmore={true} /> 
 		</Wrapper>
 	);
 };
