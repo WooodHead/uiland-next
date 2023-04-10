@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { ScreensContext } from '../../context/screensContex';
 import { useEffect } from 'react';
 
-const ScreensInCategory = ({ screens,viewmore }) => {
+const ScreensInCategory = ({ screens,viewmore=false}) => {
 	return (
 		<>
 			<CategorySectionContainer>
