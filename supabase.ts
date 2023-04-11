@@ -550,20 +550,12 @@ export async function addImagesToScreens(
 		.insert({
 			screenId: screenId,
 			url: url,
-			order: 10200 + id,
+			order: 12600 + id,
 			version: 1,
 		})
 		.select();
 
 	return data;
-}
-
-//get the range of dates wwithin a period
-export async function getRange() {
-	const { data, error } = await supabase
-		.from('screenImages')
-		.select()
-		.rangeLte('created_at', '[2023-01-01 14:00, 2023-03-01 16:00)');
 }
 
 export const addUserData = async (type, formdata) => {
@@ -576,6 +568,7 @@ export const addUserData = async (type, formdata) => {
 	return data;
 };
 
+// track number of downloads for a user
 export const numberOfDownloads = async (user) => {
 	const { data, error } = await supabase.rpc('downloads', {
 		user_id: user.id,
@@ -584,6 +577,7 @@ export const numberOfDownloads = async (user) => {
 	return data;
 };
 
+// track number of copys for a user
 export const numberOfCopyImage = async (user) => {
 	const { data, error } = await supabase.rpc('copy', {
 		user_id: user.id,

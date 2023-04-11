@@ -7,7 +7,7 @@ const ScreensTab = ({ screens }) => {
 		<>
 			<SearchTabBar />
 			<CategoryTabBar />
-			<ScreensInCategory  screens={screens} />
+			<ScreensInCategory screens={screens} />
 		</>
 	);
 };

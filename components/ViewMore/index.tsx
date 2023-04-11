@@ -46,10 +46,9 @@ const Wrapper = styled.div`
 		padding: 0.8em;
 		color: var(--primary-text-black);
 		font-size: 14px;
-			font-weight: 600;
+		font-weight: 600;
 		.icon {
 			margin-right: 0.5em;
-		
 		}
 	}
 `;

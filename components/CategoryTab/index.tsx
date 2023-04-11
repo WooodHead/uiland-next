@@ -77,6 +77,12 @@ const CategoryTabBar = () => {
 			status: '',
 			id: 12,
 		},
+		{
+			category: 'Social',
+			categoryStatus: 'Social',
+			status: '',
+			id: 12,
+		},
 	];
 
 	return (

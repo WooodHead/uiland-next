@@ -193,7 +193,12 @@ const useScreenshot = (screens: any) => {
 				pathname: path,
 				query: query,
 			});
-			const data = await getScreensById(router.query.id, page, router.query,user);
+			const data = await getScreensById(
+				router.query.id,
+				page,
+				router.query,
+				user
+			);
 
 			setLimitedScreens(
 				JSON.stringify(data) === JSON.stringify([]) ? screens : data
@@ -229,7 +234,12 @@ const useScreenshot = (screens: any) => {
 				pathname: path,
 				query: query,
 			});
-			const data = await getScreensById(router.query.id, page, router.query,user);
+			const data = await getScreensById(
+				router.query.id,
+				page,
+				router.query,
+				user
+			);
 
 			setLimitedScreens(
 				JSON.stringify(data) === JSON.stringify([]) ? screens : data
@@ -266,7 +276,12 @@ const useScreenshot = (screens: any) => {
 				pathname: path,
 				query: query,
 			});
-			const data = await getScreensById(router.query.id, id, router.query,user);
+			const data = await getScreensById(
+				router.query.id,
+				id,
+				router.query,
+				user
+			);
 
 			setLimitedScreens(
 				JSON.stringify(data) === JSON.stringify([]) ? screens : data
@@ -314,12 +329,9 @@ const useScreenshot = (screens: any) => {
 		const getHeaderInfo = async () => {
 			const data = await getScreensProperties(router.query.id as string);
 			setTimeHost(data.timeTravel);
-		
 		};
 		getHeaderInfo();
-	
 	}, [router.query.name]);
-
 
 	useEffect(() => {
 		let monthNames = [
@@ -354,11 +366,9 @@ const useScreenshot = (screens: any) => {
 				setGetPeriod((prev) => {
 					return [...prev, fullDate];
 				});
-			}
-			else {
+			} else {
 				setGetPeriod([fullDate]);
 			}
-	
 		});
 		//adding this dependency works for now
 	}, [timeHost]);
@@ -766,7 +776,7 @@ const useScreenshot = (screens: any) => {
 		generateZIP,
 		onClickPill,
 		pillStatus,
-		getPeriod
+		getPeriod,
 	};
 };
 

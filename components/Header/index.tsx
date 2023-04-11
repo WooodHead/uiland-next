@@ -1,12 +1,8 @@
-import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import useModal from '../../hooks/useModal';
-import {
-	BASE_DELAY_DURATION,
-	BASE_DURATION,
-} from '../../utils/transitionConstants';
+
 import { Button } from '../uiElements';
 import { buttonTypes } from '../uiElements/button';
 
@@ -27,16 +23,6 @@ const Header = () => {
 	const router = useRouter();
 	const supabaseClient = useSupabaseClient();
 
-	//animations states
-	const initialState = { opacity: 0 };
-	const animateTo = {
-		opacity: 1,
-		transition: {
-			delay: BASE_DELAY_DURATION,
-			duration: BASE_DURATION,
-		},
-	};
-
 	function showPopup() {
 		setPopup(!popup);
 	}
@@ -50,7 +36,7 @@ const Header = () => {
 	return (
 		<>
 			<Wrapper>
-				<HeaderContainer initial={initialState} animate={animateTo}>
+				<HeaderContainer>
 					<HeaderLogo>
 						<Link href='/'>
 							<img
@@ -156,7 +142,7 @@ const HeaderInfo = styled.div`
 	align-items: center;
 	position: relative;
 `;
-const HeaderContainer = styled(motion.header)`
+const HeaderContainer = styled.div`
 	width: 90%;
 	margin: auto;
 	display: flex;
