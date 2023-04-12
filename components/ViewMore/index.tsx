@@ -38,6 +38,7 @@ const Wrapper = styled.div`
 	width: 95%;
 	max-width: 1300px;
 	margin: 5em auto;
+	cursor: pointer;
 	.home {
 		display: inline-flex;
 		align-items: center;
@@ -47,6 +48,7 @@ const Wrapper = styled.div`
 		color: var(--primary-text-black);
 		font-size: 14px;
 		font-weight: 600;
+		cursor: pointer;
 		.icon {
 			margin-right: 0.5em;
 		}
