@@ -32,6 +32,42 @@ const nextConfig = {
 	},
 };
 
+// Before defining your Security Headers
+// add Content Security Policy directives using a template string.
+
+const ContentSecurityPolicy = `
+  default-src 'self';
+  script-src 'self';
+  child-src example.com;
+  style-src 'self' example.com;
+  font-src 'self';  
+`;
+
+// You can choose which headers to add to the list
+// after learning more below.
+const securityHeaders = [
+	{
+		key: 'X-Content-Type-Options',
+		value: 'nosniff',
+	},
+	{
+		key: 'Content-Security-Policy',
+		value: ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim(),
+	},
+];
+
+module.exports = {
+	async headers() {
+		return [
+			{
+				// Apply these headers to all routes in your application.
+				source: '/:path*',
+				headers: securityHeaders,
+			},
+		];
+	},
+};
+
 module.exports = withBundleAnalyzer(withPWA(nextConfig));
 
 module.exports = withSentryConfig(
