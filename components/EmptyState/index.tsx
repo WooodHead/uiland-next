@@ -7,7 +7,7 @@ function EmptyState() {
 				<img src='/assets/img/emptyicon.svg' />
 			</div>
 			<div>
-				<b>Images Loading...</b>
+				<b>Such Empty 	&#128534;</b>
 			</div>
 		</EmptyContainer>
 	);
