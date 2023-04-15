@@ -1,13 +1,23 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import styled from 'styled-components';
+import { BASE_IMAGE } from '../../utils/base64Image';
 
 function ImageCardInfo({ headerInfo, count, actualCount }) {
 	return (
 		<>
 			<CardWrapper>
 				<ImageCardLogo>
-					<img src={headerInfo.logo} alt={`${headerInfo.name} ui screens`} />
+					<Image
+						src={headerInfo.logo}
+						alt={`${headerInfo.name} ui screens`}
+						placeholder='blur'
+						width={240}
+						height={240}
+						unoptimized
+						blurDataURL={BASE_IMAGE}
+					/>
 				</ImageCardLogo>
 				<Link href='/' passHref legacyBehavior>
 					<BackIcon>

@@ -618,7 +618,6 @@ const SinglePage = ({ screens, brandcountry, screensBYID }) => {
 							)}
 							<DownloadIcon downloadImage={downloadImage} image={data.url} />
 							<CopyIcon copyImage={copyImage} image={data.url} />
-							{/* <ThreeDots openBottomSheet={openBottomSheetModal} /> */}
 						</SecondRow>
 					</ScreenShotContent>
 				))}
